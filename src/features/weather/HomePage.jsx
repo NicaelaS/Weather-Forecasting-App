@@ -21,7 +21,8 @@ function HomePage() {
 
             return {
               city: data.name || city,
-              temperature: Math.round(data.main?.temp ?? 0),
+              // keep raw metric temp so formatting util can show both units
+              temperature: data.main?.temp,
               icon: data.weather?.[0]?.icon,
             }
           }),

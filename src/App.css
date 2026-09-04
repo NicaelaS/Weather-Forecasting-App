@@ -121,3 +121,127 @@
   color: #1e3a8a;
   border: 1px solid #bfdbfe;
 }
+
+.weather-card-wrapper {
+  position: relative;
+}
+
+.fav-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: #475569;
+}
+
+.fav-toggle.fav-on {
+  color: #f59e0b;
+}
+
+.favorite-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.favorite-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #e6eefc;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.status-panel--error {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.weather-search {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.weather-search input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.weather-search button {
+  padding: 0.8rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.weather-search button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.weather-summary {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.weather-summary h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.weather-summary__temp {
+  margin: 0 0 0.75rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.weather-summary__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0.75rem;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.weather-detail__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.weather-detail__icon {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.weather-detail__icon--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}

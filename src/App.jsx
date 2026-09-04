@@ -1,5 +1,8 @@
-import { NavLink, Route, Routes, useParams } from 'react-router-dom'
+import { NavLink, Route, Routes } from 'react-router-dom'
 import HomePage from './features/weather/HomePage'
+import WeatherDetail from './features/weather/WeatherDetail'
+import WeatherSearch from './features/search/WeatherSearch'
+import FavoritesPage from './features/favorites/FavoritesPage'
 import './App.css'
 
 function NavBar() {
@@ -12,19 +15,6 @@ function NavBar() {
         Favorites
       </NavLink>
     </nav>
-  )
-}
-
-function WeatherForecastingDetail() {
-  const { city } = useParams()
-  const decodedName = decodeURIComponent(city || '')
-
-  return (
-    <section className="page-card">
-      <h1>{decodedName || 'City Forecast'}</h1>
-      <p className="lede">Detailed weather forecast for {decodedName || 'this city'}.</p>
-      <p>Weather detail content will be connected to the OpenWeather API here.</p>
-    </section>
   )
 }
 
@@ -44,9 +34,17 @@ function App() {
 
       <main className="page-shell">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/weather/:city" element={<WeatherForecastingDetail />} />
-          <Route path="/favorites" element={<Favorites />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <HomePage />
+                <WeatherSearch />
+              </>
+            }
+          />
+          <Route path="/weather/:city" element={<WeatherDetail />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
         </Routes>
       </main>
     </div>

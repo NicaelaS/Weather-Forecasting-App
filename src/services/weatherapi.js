@@ -2,6 +2,10 @@ import axios from 'axios'
 
 const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY
 
+if (!apiKey) {
+  console.warn('Missing VITE_OPENWEATHER_API_KEY. Add it to a .env file before running the app.')
+}
+
 const weatherApi = axios.create({
   baseURL: 'https://api.openweathermap.org/data/2.5',
   params: {
@@ -11,6 +15,10 @@ const weatherApi = axios.create({
 })
 
 export async function getWeatherByCity(city) {
+  if (!apiKey) {
+    throw new Error('Missing OpenWeather API key. Add VITE_OPENWEATHER_API_KEY to your .env file.')
+  }
+
   const response = await weatherApi.get('/weather', {
     params: {
       q: city,
