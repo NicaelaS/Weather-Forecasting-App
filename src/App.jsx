@@ -1,4 +1,5 @@
 import { NavLink, Route, Routes, useParams } from 'react-router-dom'
+import HomePage from './features/weather/HomePage'
 import './App.css'
 
 function NavBar() {
@@ -14,24 +15,9 @@ function NavBar() {
   )
 }
 
-function Home() {
-  return (
-    <section className="page-card">
-      <h1>Weather App</h1>
-      <p className="lede">Search for a city to view current weather and forecast details.</p>
-
-      <div className="quick-links">
-        <NavLink to="/city/Seattle">Seattle</NavLink>
-        <NavLink to="/city/Denver">Denver</NavLink>
-        <NavLink to="/city/New%20York">New York</NavLink>
-      </div>
-    </section>
-  )
-}
-
 function WeatherForecastingDetail() {
-  const { name } = useParams()
-  const decodedName = decodeURIComponent(name || '')
+  const { city } = useParams()
+  const decodedName = decodeURIComponent(city || '')
 
   return (
     <section className="page-card">
@@ -58,8 +44,8 @@ function App() {
 
       <main className="page-shell">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/city/:name" element={<WeatherForecastingDetail />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/weather/:city" element={<WeatherForecastingDetail />} />
           <Route path="/favorites" element={<Favorites />} />
         </Routes>
       </main>
