@@ -105,28 +105,17 @@ export async function getForecastByCity(city) {
     throw new Error('Missing OpenWeather API key. Add VITE_OPENWEATHER_API_KEY to your .env file.')
   }
 
-  let response
-
-  try {
-    response = await weatherApi.get('/forecast/daily', {
-      params: {
-        q: city,
-        cnt: 7,
-      },
-    })
-  } catch (error) {
-    response = await weatherApi.get('/forecast', {
-      params: {
-        q: city,
-        cnt: 7,
-      },
-    })
-  }
+  const response = await weatherApi.get('/forecast', {
+    params: {
+      q: city,
+    },
+  })
 
   const list = response?.data?.list ?? []
+  const normalized = normalizeDailyForecast(list).slice(0, 7)
 
   return {
-    list: normalizeDailyForecast(list),
+    list: normalized,
     city: response?.data?.city ?? null,
   }
 }

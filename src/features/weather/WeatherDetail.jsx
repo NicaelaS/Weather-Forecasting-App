@@ -124,7 +124,7 @@ function WeatherDetail() {
 
       {forecast.length > 0 && (
         <div className="forecast-panel forecast-panel--detail">
-          <h3>Next 7 days</h3>
+          <h3>Next {forecast.length} {forecast.length === 1 ? 'day' : 'days'}</h3>
           <div className="forecast-panel__list forecast-panel__list--detail">
             {forecast.map((day) => {
               const iconUrl = day.icon ? `https://openweathermap.org/img/wn/${day.icon}@2x.png` : null
