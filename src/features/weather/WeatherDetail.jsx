@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import useFavorites from '../../hooks/useFavorites'
 import { getForecastByCity, getWeatherByCity } from '../../services/weatherapi'
 import formatTempBoth from '../../utils/formatTemperature'
 
@@ -10,6 +11,7 @@ function WeatherDetail() {
   const [forecast, setForecast] = useState([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites()
 
   useEffect(() => {
     let isMounted = true
@@ -78,29 +80,47 @@ function WeatherDetail() {
   const icon = weather.weather?.[0]?.icon
   const iconUrl = icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : null
 
+  const favorited = isFavorite(weather.name)
+
   return (
     <section className="page-card weather-detail">
-      <div className="weather-detail__header">
-        {iconUrl ? (
-          <img src={iconUrl} alt={`${weather.name} weather icon`} className="weather-detail__icon" />
-        ) : (
-          <div className="weather-detail__icon weather-detail__icon--fallback" aria-hidden="true">
-            ☀️
+      <div className="weather-summary-wrapper weather-summary-wrapper--detail">
+        <div className="weather-detail__header">
+          {iconUrl ? (
+            <img src={iconUrl} alt={`${weather.name} weather icon`} className="weather-detail__icon" />
+          ) : (
+            <div className="weather-detail__icon weather-detail__icon--fallback" aria-hidden="true">
+              ☀️
+            </div>
+          )}
+          <div>
+            <h1>{weather.name}</h1>
+            <p className="lede">{weather.weather?.[0]?.description || 'Current conditions'}</p>
           </div>
-        )}
-        <div>
-          <h1>{weather.name}</h1>
-          <p className="lede">{weather.weather?.[0]?.description || 'Current conditions'}</p>
         </div>
+
+        <p className="weather-summary__temp">{formatTempBoth(weather.main?.temp)}</p>
+
+        <div className="weather-summary__meta">
+          <span>Humidity: {weather.main?.humidity ?? '--'}%</span>
+          <span>Wind speed: {weather.wind?.speed ?? '--'} m/s</span>
+          <span>Pressure: {weather.main?.pressure ?? '--'} hPa</span>
+        </div>
+
       </div>
 
-      <p className="weather-summary__temp">{formatTempBoth(weather.main?.temp)}</p>
-
-      <div className="weather-summary__meta">
-        <span>Humidity: {weather.main?.humidity ?? '--'}%</span>
-        <span>Wind speed: {weather.wind?.speed ?? '--'} m/s</span>
-        <span>Pressure: {weather.main?.pressure ?? '--'} hPa</span>
-      </div>
+      <button
+        type="button"
+        className={`fav-toggle fav-toggle--summary ${favorited ? 'fav-on' : ''}`}
+        onClick={() => {
+          if (favorited) removeFavorite(weather.name)
+          else addFavorite(weather.name)
+        }}
+        aria-label={favorited ? `Remove ${weather.name} from favorites` : `Add ${weather.name} to favorites`}
+        aria-pressed={favorited}
+      >
+        {favorited ? '★' : '☆'}
+      </button>
 
       {forecast.length > 0 && (
         <div className="forecast-panel forecast-panel--detail">

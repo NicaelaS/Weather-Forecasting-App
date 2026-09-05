@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import useFavorites from '../../hooks/useFavorites'
 import { getForecastByCity, getWeatherByCity } from '../../services/weatherapi'
 import formatTempBoth from '../../utils/formatTemperature'
 
@@ -8,6 +10,7 @@ function WeatherSearch() {
   const [forecast, setForecast] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites()
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -67,17 +70,34 @@ function WeatherSearch() {
       {error && <div className="status-panel status-panel--error">{error}</div>}
 
       {weather && (
-        <div className="weather-summary">
-          <h2>{weather.name}</h2>
-          <p className="weather-summary__temp">{formatTempBoth(weather.main?.temp)}</p>
+        <div className="weather-summary-wrapper">
+          <Link to={`/weather/${encodeURIComponent(weather.name)}`} className="weather-summary weather-summary-card">
+            <h2>{weather.name}</h2>
+            <p className="weather-summary__temp">{formatTempBoth(weather.main?.temp)}</p>
 
-          <div className="weather-summary__meta">
-            <span>Humidity: {weather.main?.humidity ?? '--'}%</span>
-            <span>Pressure: {weather.main?.pressure ?? '--'} hPa</span>
-            <span>Wind: {weather.wind?.speed ?? '--'} m/s</span>
-          </div>
+            <div className="weather-summary__meta">
+              <span>Humidity: {weather.main?.humidity ?? '--'}%</span>
+              <span>Pressure: {weather.main?.pressure ?? '--'} hPa</span>
+              <span>Wind: {weather.wind?.speed ?? '--'} m/s</span>
+            </div>
 
-          <p>{weather.weather?.[0]?.description || 'Current conditions'}</p>
+            <p>{weather.weather?.[0]?.description || 'Current conditions'}</p>
+          </Link>
+
+          <button
+            type="button"
+            className={`fav-toggle fav-toggle--summary ${isFavorite(weather.name) ? 'fav-on' : ''}`}
+            onClick={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              if (isFavorite(weather.name)) removeFavorite(weather.name)
+              else addFavorite(weather.name)
+            }}
+            aria-label={isFavorite(weather.name) ? `Remove ${weather.name} from favorites` : `Add ${weather.name} to favorites`}
+            aria-pressed={isFavorite(weather.name)}
+          >
+            {isFavorite(weather.name) ? '★' : '☆'}
+          </button>
 
           {forecast.length > 0 && (
             <div className="forecast-panel">
@@ -95,12 +115,8 @@ function WeatherSearch() {
                         <span className="forecast-day__icon forecast-day__icon--fallback" aria-hidden="true">☀️</span>
                       )}
                       <span className="forecast-day__description">{day.description}</span>
-                      <span className="forecast-day__temps">
-                        Low: {formatTempBoth(day.tempMin)}
-                      </span>
-                      <span className="forecast-day__temps">
-                        High: {formatTempBoth(day.tempMax)}
-                      </span>
+                      <span className="forecast-day__temps">Low: {formatTempBoth(day.tempMin)}</span>
+                      <span className="forecast-day__temps">High: {formatTempBoth(day.tempMax)}</span>
                     </div>
                   )
                 })}
