@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { getWeatherByCity } from '../../services/weatherapi'
+import { getForecastByCity, getWeatherByCity } from '../../services/weatherapi'
 import formatTempBoth from '../../utils/formatTemperature'
 
 function WeatherSearch() {
   const [cityInput, setCityInput] = useState('')
   const [weather, setWeather] = useState(null)
+  const [forecast, setForecast] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -16,6 +17,7 @@ function WeatherSearch() {
     if (!trimmedCity) {
       setError('Please enter a city name.')
       setWeather(null)
+      setForecast([])
       return
     }
 
@@ -23,10 +25,16 @@ function WeatherSearch() {
     setError('')
 
     try {
-      const result = await getWeatherByCity(trimmedCity)
+      const [result, forecastResult] = await Promise.all([
+        getWeatherByCity(trimmedCity),
+        getForecastByCity(trimmedCity),
+      ])
+
       setWeather(result)
+      setForecast(forecastResult.list || [])
     } catch (err) {
       setWeather(null)
+      setForecast([])
       setError(
         err?.message?.includes('API key')
           ? err.message
@@ -70,6 +78,35 @@ function WeatherSearch() {
           </div>
 
           <p>{weather.weather?.[0]?.description || 'Current conditions'}</p>
+
+          {forecast.length > 0 && (
+            <div className="forecast-panel">
+              <h3>Next 7 days</h3>
+              <div className="forecast-panel__list">
+                {forecast.map((day) => {
+                  const iconUrl = day.icon ? `https://openweathermap.org/img/wn/${day.icon}@2x.png` : null
+
+                  return (
+                    <div key={day.date} className="forecast-day">
+                      <span className="forecast-day__label">{day.label}</span>
+                      {iconUrl ? (
+                        <img src={iconUrl} alt={day.description} className="forecast-day__icon" />
+                      ) : (
+                        <span className="forecast-day__icon forecast-day__icon--fallback" aria-hidden="true">☀️</span>
+                      )}
+                      <span className="forecast-day__description">{day.description}</span>
+                      <span className="forecast-day__temps">
+                        Low: {formatTempBoth(day.tempMin)}
+                      </span>
+                      <span className="forecast-day__temps">
+                        High: {formatTempBoth(day.tempMax)}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </section>
